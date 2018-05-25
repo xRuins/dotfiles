@@ -20,8 +20,10 @@
 (el-get-bundle coffee-mode)
 (el-get-bundle color-theme)
 (el-get-bundle color-theme-solarized)
+(el-get-bundle company-go)
 (el-get-bundle dash)
 (el-get-bundle dockerfile-mode)
+(el-get-bundle elpa:ruby-electric)
 (el-get-bundle expand-region)
 (el-get-bundle flycheck)
 (el-get-bundle flycheck-pos-tip)
@@ -29,6 +31,8 @@
 (el-get-bundle fringe-helper)
 (el-get-bundle git-gutter)
 (el-get-bundle git-gutter-fringe)
+(el-get-bundle go-autocomplete)
+(el-get-bundle go-eldoc)
 (el-get-bundle go-mode)
 (el-get-bundle haml-mode)
 (el-get-bundle helm)
@@ -49,7 +53,6 @@
 (el-get-bundle rspec-mode)
 (el-get-bundle rubocop)
 (el-get-bundle ruby-block)
-(el-get-bundle elpa:ruby-electric)
 (el-get-bundle ruby-refactor)
 (el-get-bundle slim-mode)
 (el-get-bundle smart-compile)
@@ -271,3 +274,24 @@
 
 (global-set-key "\M-n" "\C-u1\C-v")
 (global-set-key "\M-p" "\C-u1\M-v")
+
+;; golang
+(add-hook 'go-mode-hook 'company-mode)
+(add-hook 'go-mode-hook 'flycheck-mode)
+(add-hook 'go-mode-hook (lambda()
+           (add-hook 'before-save-hook' 'gofmt-before-save)
+           (local-set-key (kbd "M-.") 'godef-jump)
+           (set (make-local-variable 'company-backends) '(company-go))
+           (company-mode)
+           (setq indent-tabs-mode nil)
+           (setq c-basic-offset 4)
+           (setq tab-width 4)))
+
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+(set-face-attribute 'eldoc-highlight-function-argument nil
+                    :underline t :foreground "green"
+                    :weight 'bold)
+(eval-after-load "go-mode"
+  '(progn
+     (require 'go-autocomplete)))
+(define-key go-mode-map (kbd "C-@") 'godef-jump-other-window)
