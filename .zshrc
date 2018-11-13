@@ -2,19 +2,14 @@
 # Foundation
 # ----------------------------------------
 
-autoload colors
-colors
+PAGER='less'
+EDITOR='emacs'
+CASE_SENSITIVE="false"
 
-export PAGER='less'
-export EDITOR='emacs'
-
-# ヒストリ
+# shell comamnd history
 HISTFILE=~/.zsh_history
 HISTSIZE=65536
 SAVEHIST=65536
-
-# 大文字と小文字を区別しない
-export CASE_SENSITIVE="false"
 
 SH=`basename $SHELL`
 
@@ -79,7 +74,7 @@ zplug "jhawthorn/fzy", \
 ADDITIONAL_PATH=($HOME/local/bin $HOME/bin /usr/local/bin /usr/local/sbin $HOME/google-cloud-sdk/bin)
 for p in $ADDITIONAL_PATH; do
     if [ -e $p ]; then
-	export PATH="$p:$PATH"
+	PATH="$p:$PATH"
     fi
 done
 
@@ -123,7 +118,7 @@ autoload -Uz colors
 # Less
 # ----------------------------------------
 
-export LESS='-R'
+LESS='-R'
 
 # for unix
 SRC_HIGHLIGHT_PATH="/usr/share/source-highlight/src-hilite-lesspipe.sh"
@@ -132,30 +127,6 @@ SRC_HIGHLIGHT_PATH="/usr/share/source-highlight/src-hilite-lesspipe.sh"
 # for macOS w/ homebrew script
 SRC_HIGHLIGHT_PATH_OSX="/usr/local/bin/src-hilite-lesspipe.sh"
 [ -x ${SRC_HIGHLIGHT_PATH_OSX} ] && export LESSOPEN="| ${SRC_HIGHLIGHT_PATH_OSX} %s"
-
-# ----------------------------------------
-# Appearance
-# ----------------------------------------
-
-# ls の色付け指定
-unset LSCOLORS
-case "${TERM}" in
-    xterm)
-	export TERM=xterm-color
-	;;
-    kterm)
-	export TERM=kterm-color
-	# set BackSpace control character
-	stty erase
-	;;
-    cons25)
-	unset LANG
-	export LSCOLORS=ExFxCxdxBxegedabagacad
-	export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-	zstyle ':completion:*' list-colors \
-	       'di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
-	;;
-esac
 
 # ---------------------------------------
 #  anyenv
@@ -232,7 +203,7 @@ source ~/dotfiles/.zsh/.zshrc.alias > /dev/null 2>&1
 source ~/.zshrc.local > /dev/null 2>&1
 
 # ----------------------------------------
-# Completion
+#  completion
 # ----------------------------------------
 
 fpath=(~/.zsh/completion $fpath)
