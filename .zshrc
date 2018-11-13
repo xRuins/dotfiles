@@ -24,20 +24,20 @@ SH=`basename $SHELL`
 
 source $HOME/dotfiles/zplug/init.zsh
 
-# zplug "b4b4r07/enhancd", use:init.sh, frozen:1
-# zplug "glidenote/hub-zsh-completion", frozen:1
-# zplug "modules/prompt", from:prezto, frozen:1
-# zplug "modules/utility", from:prezto, frozen:1
-# zplug "rupa/z", use:z.sh, frozen:1
-# zplug "sorin-ionescu/prezto", frozen:1
-# zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf, frozen:1
-# zplug "zplug/zplug", hook-build:'zplug --self-manage', frozen:1
-# zplug 'Valodim/zsh-curl-completion', frozen:1
-# zplug 'b4b4r07/pkill.sh', as:command, use:'pkill.sh', rename-to:'pk', frozen:1
+zplug "b4b4r07/enhancd", use:init.sh, frozen:1
+zplug "glidenote/hub-zsh-completion", frozen:1
+zplug "modules/prompt", from:prezto, frozen:1
+zplug "modules/utility", from:prezto, frozen:1
+zplug "rupa/z", use:z.sh, frozen:1
+zplug "sorin-ionescu/prezto", frozen:1
+zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf, frozen:1
+zplug "zplug/zplug", hook-build:'zplug --self-manage', frozen:1
+zplug 'Valodim/zsh-curl-completion', frozen:1
+zplug 'b4b4r07/pkill.sh', as:command, use:'pkill.sh', rename-to:'pk', frozen:1
 
-# zplug "zsh-users/zsh-completions", defer:0, frozen:1
-# zplug "changyuheng/fz", defer:1, frozen:1
-# zplug "zsh-users/zsh-syntax-highlighting", defer:2, frozen:1
+zplug "zsh-users/zsh-completions", defer:0, frozen:1
+zplug "changyuheng/fz", defer:1, frozen:1
+zplug "zsh-users/zsh-syntax-highlighting", defer:2, frozen:1
 
 zplug 'b4b4r07/epoch-cat', \
       as:command, \
@@ -71,7 +71,6 @@ zplug "b4b4r07/httpstat", \
 zplug "jhawthorn/fzy", \
       as:command, \
       hook-build:"make && sudo make install", frozen:1
-
 
 # ----------------------------------------
 # path configuration
@@ -158,47 +157,11 @@ case "${TERM}" in
 	;;
 esac
 
-
-# ----------------------------------------
-# Functions
-# ----------------------------------------
-
-# 解凍 http://d.hatena.ne.jp/jeneshicc/20110215/1297778049
-function extract () {
-    if [ -f $1 ] ; then
-	case $1 in
-            *.tar.bz2)   tar xvjf $1    ;;
-            *.tar.gz)    tar xvzf $1    ;;
-            *.tar.xz)    tar xvJf $1    ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar x $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xvf $1     ;;
-            *.tbz2)      tar xvjf $1    ;;
-            *.tgz)       tar xvzf $1    ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *.lzma)      lzma -dv $1    ;;
-            *.xz)        xz -dv $1      ;;
-            *)           echo "don't know how to extract '$1'..." ;;
-	esac
-    else
-	echo "'$1' is not a valid file!"
-    fi
-}
-
-alias -s {gz,tgz,zip,lzh,bz2,tbz,Z,tar,arj,xz,lzma,tbz2,rar}=extract
-
-function precmd () {
-    _z --add "$(pwd -P)"
-}
-
 # ---------------------------------------
 #  anyenv
 # ----------------------------------------
 
-if [ -d ${HOME}/.anyenv ] ; then
+if [ -d ${HOME}/.anyenv ]; then
     export PATH="$HOME/.anyenv/bin:$PATH"
     eval "$(anyenv init -)"
     for D in `ls $HOME/.anyenv/envs`
@@ -218,7 +181,7 @@ export GOPATH=$HOME
 # ----------------------------------------
 
 if type "direnv" > /dev/null 2>&1; then
-    eval "$(direnv hook zsh)"
+    eval "$(direnv hook $SH)"
 fi
 
 # ----------------------------------------
@@ -284,18 +247,13 @@ zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p
 #  initialize prompt theme
 # ----------------------------------------
 
-# vcs_info 設定
-RPROMPT=""
-
-autoload -Uz vcs_info
-
+zstyle ':prezto:load' pmodule 'git'
 zstyle ':prezto:load' zfunction 'zargs' 'zmv'
 zstyle ':prezto:module:prompt' theme 'paradox' pwd-length 'short'
 zstyle ':prezto:module:utility:ls'    color 'yes'
 zstyle ':prezto:module:utility:diff'  color 'yes'
 zstyle ':prezto:module:utility:wdiff' color 'yes'
 zstyle ':prezto:module:utility:make'  color 'yes'
-
 
 # ----------------------------------------
 #  zplug
@@ -312,9 +270,3 @@ if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
 fi
 
 zplug load
-
-prompt paradox
-
-# TAB補完の機能をaliasにも追加
-_Z_CMD=j
-compctl -U -K _z_zsh_tab_completion $_Z_CMD
