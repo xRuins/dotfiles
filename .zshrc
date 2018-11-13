@@ -16,9 +16,6 @@ SAVEHIST=65536
 # 大文字と小文字を区別しない
 export CASE_SENSITIVE="false"
 
-# theme specification
-ZSH_THEME="solarized-powerline"
-
 SH=`basename $SHELL`
 
 # ----------------------------------------
@@ -27,53 +24,53 @@ SH=`basename $SHELL`
 
 source $HOME/dotfiles/zplug/init.zsh
 
-zplug "b4b4r07/enhancd", use:init.sh
-zplug "glidenote/hub-zsh-completion"
-zplug "modules/prompt", from:prezto
-zplug "modules/utility", from:prezto
-zplug "rupa/z", use:z.sh
-zplug "sorin-ionescu/prezto"
-zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf
-zplug "zplug/zplug", hook-build:'zplug --self-manage'
-zplug 'Valodim/zsh-curl-completion'
-zplug 'b4b4r07/pkill.sh', as:command, use:'pkill.sh', rename-to:'pk'
+# zplug "b4b4r07/enhancd", use:init.sh, frozen:1
+# zplug "glidenote/hub-zsh-completion", frozen:1
+# zplug "modules/prompt", from:prezto, frozen:1
+# zplug "modules/utility", from:prezto, frozen:1
+# zplug "rupa/z", use:z.sh, frozen:1
+# zplug "sorin-ionescu/prezto", frozen:1
+# zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf, frozen:1
+# zplug "zplug/zplug", hook-build:'zplug --self-manage', frozen:1
+# zplug 'Valodim/zsh-curl-completion', frozen:1
+# zplug 'b4b4r07/pkill.sh', as:command, use:'pkill.sh', rename-to:'pk', frozen:1
 
-zplug "zsh-users/zsh-completions", defer:0
-zplug "changyuheng/fz", defer:1
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
+# zplug "zsh-users/zsh-completions", defer:0, frozen:1
+# zplug "changyuheng/fz", defer:1, frozen:1
+# zplug "zsh-users/zsh-syntax-highlighting", defer:2, frozen:1
 
 zplug 'b4b4r07/epoch-cat', \
       as:command, \
-      hook-build:'go get -d && go build'
+      hook-build:'go get -d && go build', frozen:1
 zplug "junegunn/fzf-bin", \
       as:command, \
       from:gh-r, \
-      rename-to:"fzf",
+      rename-to:"fzf", frozen:1
 zplug "moncho/dry", \
       as:command, \
       from:gh-r, \
-      rename-to:"dry"
+      rename-to:"dry", frozen:1
 zplug "stedolan/jq", \
       as:command, \
       from:gh-r, \
-      rename-to:jq
+      rename-to:jq, frozen:1
 zplug "peco/peco", \
       as:command, \
-      from:gh-r
+      from:gh-r, frozen:1
 zplug "motemen/ghq", \
       as:command, \
       from:gh-r, \
-      rename-to:ghq
+      rename-to:ghq, frozen:1
 zplug "b4b4r07/git-br", \
       as:command, \
-      use:'git-br'
+      use:'git-br', frozen:1
 zplug "b4b4r07/httpstat", \
       as:command, \
       use:'(*).sh', \
-      rename-to:'$1'
+      rename-to:'$1', frozen:1
 zplug "jhawthorn/fzy", \
       as:command, \
-      hook-build:"make && sudo make install"
+      hook-build:"make && sudo make install", frozen:1
 
 
 # ----------------------------------------
@@ -83,7 +80,7 @@ zplug "jhawthorn/fzy", \
 ADDITIONAL_PATH=($HOME/local/bin $HOME/bin /usr/local/bin /usr/local/sbin $HOME/google-cloud-sdk/bin)
 for p in $ADDITIONAL_PATH; do
     if [ -e $p ]; then
-	    export PATH="$p:$PATH"
+	export PATH="$p:$PATH"
     fi
 done
 
@@ -91,34 +88,33 @@ done
 # zsh built-in function
 # ----------------------------------------
 
-setopt auto_param_slash      # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
-setopt mark_dirs             # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
-setopt list_types            # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
-setopt auto_menu             # 補完キー連打で順に補完候補を自動で補完
-setopt auto_param_keys       # カッコの対応などを自動的に補完
-setopt magic_equal_subst     # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
-setopt complete_in_word      # 語の途中でもカーソル位置で補完
-setopt always_last_prompt    # カーソル位置は保持したままファイル名一覧を順次その場で表示
-setopt print_eight_bit       # 日本語ファイル名等8ビットを通す
-setopt globdots              # ドットの指定なしで.から始まるファイルをマッチ
-setopt list_packed           # リストを詰めて表示
-setopt auto_cd               # ディレクトリ名だけでcd
-setopt auto_pushd            # pushdの自動化(cd -[tab]用)
-setopt correct               # コマンド名をtypoした時に修正するか尋ねる
+setopt \
+    auto_param_slash \
+    mark_dirs \
+    list_types \
+    auto_menu \
+    auto_param_keys \
+    magic_equal_subst \
+    complete_in_word \
+    always_last_prompt \
+    print_eight_bit \
+    globdots \
+    list_packed \
+    auto_cd \
+    auto_pushd \
+    correct \
+    list_packed \
+    noautoremoveslash \
+    nolistbeep \
+    complete_aliases \
+    share_history \
+    hist_ignore_all_dups \
+    hist_ignore_dups \
+    hist_save_no_dups \
+    nonomatch
+
 # setopt prompt のスタイル変更
 SPROMPT="correct: $RED%R$DEFAULT -> $GREEN%r$DEFAULT ? [No/Yes/Abort/Edit]"
-setopt list_packed           # 補完リストを詰めて表示する
-setopt noautoremoveslash     # ディレクトリ名の末尾の/を除去しない
-setopt nolistbeep            # 補完リストを表示した際のbeepを無効化
-setopt complete_aliases      # aliasも補完対象とする
-setopt share_history         # 端末間で履歴を共有
-# 履歴に残すコマンドの重複を排除
-setopt hist_ignore_all_dups
-setopt hist_ignore_dups
-setopt hist_save_no_dups
-setopt nonomatch
-
-unsetopt bg_nice             # バックグラウンドジョブを通常の優先度で実行
 
 autoload -Uz add-zsh-hook
 autoload -Uz is-at-least
@@ -146,32 +142,22 @@ SRC_HIGHLIGHT_PATH_OSX="/usr/local/bin/src-hilite-lesspipe.sh"
 unset LSCOLORS
 case "${TERM}" in
     xterm)
-	    export TERM=xterm-color
-	    ;;
+	export TERM=xterm-color
+	;;
     kterm)
-	    export TERM=kterm-color
-	    # set BackSpace control character
-	    stty erase
-	    ;;
+	export TERM=kterm-color
+	# set BackSpace control character
+	stty erase
+	;;
     cons25)
-	    unset LANG
-	    export LSCOLORS=ExFxCxdxBxegedabagacad
-	    export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-	    zstyle ':completion:*' list-colors \
-	           'di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
-	    ;;
+	unset LANG
+	export LSCOLORS=ExFxCxdxBxegedabagacad
+	export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+	zstyle ':completion:*' list-colors \
+	       'di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
+	;;
 esac
 
-# Terminal のタイトルにカレントディレクトリを追加
-case "$TERM" in
-    xterm*|kterm*|rxvt*)
-	    PROMPT=$(print "%B%{\e[34m%}%m:%(5~,%-2~/.../%2~,%~)%{\e[33m%}%# %b")
-	    PROMPT=$(print "%{\e]2;%n@%m: %~\7%}$PROMPT") # title bar
-	    ;;
-    *)
-	    PROMPT='%m:%c%# '
-	    ;;
-esac
 
 # ----------------------------------------
 # Functions
@@ -180,7 +166,7 @@ esac
 # 解凍 http://d.hatena.ne.jp/jeneshicc/20110215/1297778049
 function extract () {
     if [ -f $1 ] ; then
-	    case $1 in
+	case $1 in
             *.tar.bz2)   tar xvjf $1    ;;
             *.tar.gz)    tar xvzf $1    ;;
             *.tar.xz)    tar xvJf $1    ;;
@@ -196,9 +182,9 @@ function extract () {
             *.lzma)      lzma -dv $1    ;;
             *.xz)        xz -dv $1      ;;
             *)           echo "don't know how to extract '$1'..." ;;
-	    esac
+	esac
     else
-	    echo "'$1' is not a valid file!"
+	echo "'$1' is not a valid file!"
     fi
 }
 
@@ -283,22 +269,6 @@ source ~/dotfiles/.zsh/.zshrc.alias > /dev/null 2>&1
 source ~/.zshrc.local > /dev/null 2>&1
 
 # ----------------------------------------
-#  zplug
-# ----------------------------------------
-
-if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
-    touch ~/.zplug/last_zshrc_check_time
-    if ! zplug check --verbose; then
-        printf "Install? [y/N]: "
-        if read -q; then
-            echo; zplug install
-        fi
-    fi
-fi
-
-zplug load
-
-# ----------------------------------------
 # Completion
 # ----------------------------------------
 
@@ -326,9 +296,25 @@ zstyle ':prezto:module:utility:diff'  color 'yes'
 zstyle ':prezto:module:utility:wdiff' color 'yes'
 zstyle ':prezto:module:utility:make'  color 'yes'
 
+
+# ----------------------------------------
+#  zplug
+# ----------------------------------------
+
+if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
+    touch ~/.zplug/last_zshrc_check_time
+    if ! zplug check --verbose; then
+        printf "Install? [y/N]: "
+        if read -q; then
+            echo; zplug install
+        fi
+    fi
+fi
+
+zplug load
+
 prompt paradox
 
 # TAB補完の機能をaliasにも追加
 _Z_CMD=j
 compctl -U -K _z_zsh_tab_completion $_Z_CMD
-
