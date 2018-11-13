@@ -332,10 +332,3 @@ prompt paradox
 _Z_CMD=j
 compctl -U -K _z_zsh_tab_completion $_Z_CMD
 
-# ----------------------------------------
-#  zsh precompile
-# ----------------------------------------
-
-if [ ~/.zshrc -nt ~/.zshrc.zwc ]; then
-    zcompile ~/.zshrc
-fi
