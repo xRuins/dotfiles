@@ -38,6 +38,137 @@ zstyle ':prezto:module:utility:wdiff' color 'yes'
 zstyle ':prezto:module:utility:make'  color 'yes'
 
 # ----------------------------------------
+# path configuration
+# ----------------------------------------
+
+ADDITIONAL_PATH=($HOME/local/bin $HOME/bin /usr/local/bin /usr/local/sbin $HOME/google-cloud-sdk/bin)
+for p in $ADDITIONAL_PATH; do
+    if [ -e $p ]; then
+	PATH="$p:$PATH"
+    fi
+done
+
+# ----------------------------------------
+# zsh built-in function
+# ----------------------------------------
+
+setopt \
+    auto_param_slash \
+    mark_dirs \
+    list_types \
+    auto_menu \
+    auto_param_keys \
+    magic_equal_subst \
+    complete_in_word \
+    always_last_prompt \
+    print_eight_bit \
+    globdots \
+    list_packed \
+    auto_cd \
+    auto_pushd \
+    correct \
+    list_packed \
+    noautoremoveslash \
+    nolistbeep \
+    complete_aliases \
+    share_history \
+    hist_ignore_all_dups \
+    hist_ignore_dups \
+    hist_save_no_dups \
+    nonomatch
+
+# setopt prompt のスタイル変更
+SPROMPT="correct: $RED%R$DEFAULT -> $GREEN%r$DEFAULT ? [No/Yes/Abort/Edit]"
+
+autoload -Uz add-zsh-hook
+autoload -Uz is-at-least
+autoload -Uz colors
+
+# ----------------------------------------
+# Less
+# ----------------------------------------
+
+LESS='-R'
+
+# for unix
+SRC_HIGHLIGHT_PATH="/usr/share/source-highlight/src-hilite-lesspipe.sh"
+[ -x ${SRC_HIGHLIGHT_PATH} ] && export LESSOPEN="| ${SRC_HIGHLIGHT_PATH} %s"
+
+# for macOS w/ homebrew script
+SRC_HIGHLIGHT_PATH_OSX="/usr/local/bin/src-hilite-lesspipe.sh"
+[ -x ${SRC_HIGHLIGHT_PATH_OSX} ] && export LESSOPEN="| ${SRC_HIGHLIGHT_PATH_OSX} %s"
+
+# ---------------------------------------
+#  anyenv
+# ----------------------------------------
+
+if [ -d ${HOME}/.anyenv ]; then
+    eval "$(anyenv init - --no-rehash)"
+fi
+
+# ----------------------------------------
+#  go
+# ----------------------------------------
+
+export GOPATH=$HOME
+
+# ----------------------------------------
+#  direnv
+# ----------------------------------------
+
+if type "direnv" > /dev/null 2>&1; then
+    eval "$(direnv hook $SH)"
+fi
+
+# ----------------------------------------
+#  Homebrew
+# ----------------------------------------
+
+# brewコマンドが実行可能な場合のみ適用する
+if type "brew" > /dev/null 2>&1; then
+    # brew file 用のwrapper
+    if [ -f $(brew --prefix)/etc/brew-wrap ];then
+        source $(brew --prefix)/etc/brew-wrap
+    fi
+fi
+
+# ----------------------------------------
+#  history search with peco
+# ----------------------------------------
+
+if type "peco" > /dev/null 2>&1; then
+    function peco-history-selection() {
+        BUFFER=`history -n 1 | reverse | awk '!a[$0]++' | peco`
+        CURSOR=$#BUFFER
+        zle reset-prompt
+    }
+
+    zle -N peco-history-selection
+    bindkey '^R' peco-history-selection
+fi
+
+# ----------------------------------------
+#  gcloud
+# ----------------------------------------
+
+if type "gcloud" > /dev/null 2>&1; then
+    GCLOUD_EXECUTABLE_PATH=`where gcloud`
+    GCLOUD_BINDIR_PATH=`dirname $GCLOUD_EXECUTABLE_PATH`
+    GCLOUD_BASE_PATH=`dirname $GCLOUD_BINDIR_PATH`
+
+    source "$GCLOUD_BASE_PATH/path.$SH.inc" > /dev/null 2>&1
+    source "$GCLOUD_BASE_PATH/completion.$SH.inc" > /dev/null 2>&1
+fi
+
+# ----------------------------------------
+#  include
+# ----------------------------------------
+
+source ~/dotfiles/.zsh/.zshrc.alias > /dev/null 2>&1
+source ~/.zshrc.local > /dev/null 2>&1
+
+
+# ----------------------------------------
 #  zplug
 # ----------------------------------------
 
@@ -107,134 +238,3 @@ if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
 fi
 
 zplug load
-
-# ----------------------------------------
-# path configuration
-# ----------------------------------------
-
-ADDITIONAL_PATH=($HOME/local/bin $HOME/bin /usr/local/bin /usr/local/sbin $HOME/google-cloud-sdk/bin)
-for p in $ADDITIONAL_PATH; do
-    if [ -e $p ]; then
-	PATH="$p:$PATH"
-    fi
-done
-
-# ----------------------------------------
-# zsh built-in function
-# ----------------------------------------
-
-setopt \
-    auto_param_slash \
-    mark_dirs \
-    list_types \
-    auto_menu \
-    auto_param_keys \
-    magic_equal_subst \
-    complete_in_word \
-    always_last_prompt \
-    print_eight_bit \
-    globdots \
-    list_packed \
-    auto_cd \
-    auto_pushd \
-    correct \
-    list_packed \
-    noautoremoveslash \
-    nolistbeep \
-    complete_aliases \
-    share_history \
-    hist_ignore_all_dups \
-    hist_ignore_dups \
-    hist_save_no_dups \
-    nonomatch
-
-# setopt prompt のスタイル変更
-SPROMPT="correct: $RED%R$DEFAULT -> $GREEN%r$DEFAULT ? [No/Yes/Abort/Edit]"
-
-autoload -Uz add-zsh-hook
-autoload -Uz is-at-least
-autoload -Uz colors
-
-# ----------------------------------------
-# Less
-# ----------------------------------------
-
-LESS='-R'
-
-# for unix
-SRC_HIGHLIGHT_PATH="/usr/share/source-highlight/src-hilite-lesspipe.sh"
-[ -x ${SRC_HIGHLIGHT_PATH} ] && export LESSOPEN="| ${SRC_HIGHLIGHT_PATH} %s"
-
-# for macOS w/ homebrew script
-SRC_HIGHLIGHT_PATH_OSX="/usr/local/bin/src-hilite-lesspipe.sh"
-[ -x ${SRC_HIGHLIGHT_PATH_OSX} ] && export LESSOPEN="| ${SRC_HIGHLIGHT_PATH_OSX} %s"
-
-# ---------------------------------------
-#  anyenv
-# ----------------------------------------
-
-if [ -d ${HOME}/.anyenv ]; then
-    export PATH="$HOME/.anyenv/bin:$PATH"
-    eval "$(anyenv init - $SH)"
-fi
-
-# ----------------------------------------
-#  go
-# ----------------------------------------
-
-export GOPATH=$HOME
-
-# ----------------------------------------
-#  direnv
-# ----------------------------------------
-
-if type "direnv" > /dev/null 2>&1; then
-    eval "$(direnv hook $SH)"
-fi
-
-# ----------------------------------------
-#  Homebrew
-# ----------------------------------------
-
-# brewコマンドが実行可能な場合のみ適用する
-if type "brew" > /dev/null 2>&1; then
-    # brew file 用のwrapper
-    if [ -f $(brew --prefix)/etc/brew-wrap ];then
-        source $(brew --prefix)/etc/brew-wrap
-    fi
-fi
-
-# ----------------------------------------
-#  history search with peco
-# ----------------------------------------
-
-if type "peco" > /dev/null 2>&1; then
-    function peco-history-selection() {
-        BUFFER=`history -n 1 | reverse | awk '!a[$0]++' | peco`
-        CURSOR=$#BUFFER
-        zle reset-prompt
-    }
-
-    zle -N peco-history-selection
-    bindkey '^R' peco-history-selection
-fi
-
-# ----------------------------------------
-#  gcloud
-# ----------------------------------------
-
-if type "gcloud" > /dev/null 2>&1; then
-    GCLOUD_EXECUTABLE_PATH=`where gcloud`
-    GCLOUD_BINDIR_PATH=`dirname $GCLOUD_EXECUTABLE_PATH`
-    GCLOUD_BASE_PATH=`dirname $GCLOUD_BINDIR_PATH`
-
-    source "$GCLOUD_BASE_PATH/path.$SH.inc" > /dev/null 2>&1
-    source "$GCLOUD_BASE_PATH/completion.$SH.inc" > /dev/null 2>&1
-fi
-
-# ----------------------------------------
-#  include
-# ----------------------------------------
-
-source ~/dotfiles/.zsh/.zshrc.alias > /dev/null 2>&1
-source ~/.zshrc.local > /dev/null 2>&1
