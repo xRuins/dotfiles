@@ -85,7 +85,7 @@ autoload -Uz is-at-least
 autoload -Uz colors
 
 # ----------------------------------------
-# Less
+#  less
 # ----------------------------------------
 
 LESS='-R'
@@ -100,9 +100,10 @@ SRC_HIGHLIGHT_PATH_OSX="/usr/local/bin/src-hilite-lesspipe.sh"
 
 # ---------------------------------------
 #  anyenv
-# ----------------------------------------
+# ---------------------------------------
 
 if [ -d ${HOME}/.anyenv ]; then
+    export PATH="$HOME/.anyenv/bin:$PATH"
     eval "$(anyenv init - --no-rehash)"
 fi
 
@@ -224,3 +225,6 @@ zplug "jhawthorn/fzy", \
       hook-build:"make && sudo make install", frozen:1
 
 zplug load
+
+# precompile
+[[ ! -f ~/.zshrc.zwc || ~/.zshrc -nt ~/.zshrc.zwc ]] && zcompile ~/.zshrc
