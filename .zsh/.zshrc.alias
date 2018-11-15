@@ -55,4 +55,6 @@ function f () {
 
 alias -g F='`find . -print | peco --prompt "FILE>"`'
 
-alias reverse="awk '{a[i++]=$0} END {for (j=i-1; j>=0;) print a[j--]}'"
+reverse() {
+    awk '{a[i++]=$0} END {for (j=i-1; j>=0;) print a[j--] }'
+}
