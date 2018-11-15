@@ -1,8 +1,3 @@
-## Alias configuration
-#
-# expand aliases before completing
-#
-
 alias where="command -v"
 
 # ディストリビューションに合わせてlsのalias
@@ -37,32 +32,11 @@ alias su="su -l"
 
 alias emacs="emacs -nw"
 
-# ruby/rails
-alias devlog='tail -f log/development.log'
-alias prodlog='tail -f log/production.log'
-alias testlog='tail -f log/test.log'
-
-alias -g RED='RAILS_ENV=development'
-alias -g REP='RAILS_ENV=production'
-alias -g RET='RAILS_ENV=test'
-alias -g REV='RAILS_ENV=vagrant'
-alias -g REMT='RAILS_ENV=master_test'
-
 # git concerns
 alias br="git branch --contains=HEAD"
 
 # git branch selection w/ peco
 alias -g B='`git branch -a | peco --prompt "GIT BRANCH>" | head -n 1 | sed -e "s/^\*\s*//g"`'
-
-# iptables --listを使用した際に自動でルール番号を表示させる
-function iptables () {
-    if [ "$1" eq "--list" ]
-    then
-        iptables $* --line-numbers
-    else
-        iptables $*
-    fi
-}
 
 function agsed () {
     ag -l $1 | xargs sed -i '' "s/$1/$2/g"
@@ -81,6 +55,4 @@ function f () {
 
 alias -g F='`find . -print | peco --prompt "FILE>"`'
 
-reverse() {
-    perl -e 'print reverse <>' ${@+"$@"}
-}
+alias reverse="awk '{a[i++]=$0} END {for (j=i-1; j>=0;) print a[j--]}'"
