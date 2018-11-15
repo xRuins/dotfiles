@@ -14,11 +14,36 @@ SAVEHIST=65536
 SH=`basename $SHELL`
 
 # ----------------------------------------
+#  completion
+# ----------------------------------------
+
+fpath=(~/.zsh/completion $fpath)
+
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+
+# ----------------------------------------
+#  initialize prompt theme
+# ----------------------------------------
+
+zstyle ':prezto:load' pmodule 'git'
+zstyle ':prezto:load' zfunction 'zargs' 'zmv'
+zstyle ':prezto:module:prompt' theme 'paradox' pwd-length 'short'
+zstyle ':prezto:module:utility:ls'    color 'yes'
+zstyle ':prezto:module:utility:diff'  color 'yes'
+zstyle ':prezto:module:utility:wdiff' color 'yes'
+zstyle ':prezto:module:utility:make'  color 'yes'
+
+# ----------------------------------------
 #  zplug
 # ----------------------------------------
 
 source $HOME/dotfiles/zplug/init.zsh
 
+ENHANCD_FILTER=peco
 zplug "b4b4r07/enhancd", use:init.sh, frozen:1
 zplug "glidenote/hub-zsh-completion", frozen:1
 zplug "modules/prompt", from:prezto, frozen:1
@@ -66,6 +91,22 @@ zplug "b4b4r07/httpstat", \
 zplug "jhawthorn/fzy", \
       as:command, \
       hook-build:"make && sudo make install", frozen:1
+
+# ----------------------------------------
+#  zplug
+# ----------------------------------------
+
+if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
+    touch ~/.zplug/last_zshrc_check_time
+    if ! zplug check --verbose; then
+        printf "Install? [y/N]: "
+        if read -q; then
+            echo; zplug install
+        fi
+    fi
+fi
+
+zplug load
 
 # ----------------------------------------
 # path configuration
@@ -201,43 +242,3 @@ fi
 
 source ~/dotfiles/.zsh/.zshrc.alias > /dev/null 2>&1
 source ~/.zshrc.local > /dev/null 2>&1
-
-# ----------------------------------------
-#  completion
-# ----------------------------------------
-
-fpath=(~/.zsh/completion $fpath)
-
-zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' menu select=2
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-
-# ----------------------------------------
-#  initialize prompt theme
-# ----------------------------------------
-
-zstyle ':prezto:load' pmodule 'git'
-zstyle ':prezto:load' zfunction 'zargs' 'zmv'
-zstyle ':prezto:module:prompt' theme 'paradox' pwd-length 'short'
-zstyle ':prezto:module:utility:ls'    color 'yes'
-zstyle ':prezto:module:utility:diff'  color 'yes'
-zstyle ':prezto:module:utility:wdiff' color 'yes'
-zstyle ':prezto:module:utility:make'  color 'yes'
-
-# ----------------------------------------
-#  zplug
-# ----------------------------------------
-
-if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
-    touch ~/.zplug/last_zshrc_check_time
-    if ! zplug check --verbose; then
-        printf "Install? [y/N]: "
-        if read -q; then
-            echo; zplug install
-        fi
-    fi
-fi
-
-zplug load
