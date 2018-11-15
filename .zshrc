@@ -223,18 +223,4 @@ zplug "jhawthorn/fzy", \
       as:command, \
       hook-build:"make && sudo make install", frozen:1
 
-# ----------------------------------------
-#  zplug
-# ----------------------------------------
-
-if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
-    touch ~/.zplug/last_zshrc_check_time
-    if ! zplug check --verbose; then
-        printf "Install? [y/N]: "
-        if read -q; then
-            echo; zplug install
-        fi
-    fi
-fi
-
 zplug load
