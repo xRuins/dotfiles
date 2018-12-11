@@ -2,6 +2,6 @@
 	path = .zgen
 	url = https://github.com/tarjoilija/zgen
 	branch = master
-[submodule "zplug"]
-	path = zplug
-	url = https://github.com/zplug/zplug
+[submodule ".zprezto"]
+	path = .zprezto
+	url = https://github.com/sorin-ionescu/prezto

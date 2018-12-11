@@ -2,9 +2,6 @@
 # Foundation
 # ----------------------------------------
 
-autoload colors
-colors
-
 export PAGER='less'
 export EDITOR='emacs'
 
@@ -16,65 +13,7 @@ SAVEHIST=65536
 # 大文字と小文字を区別しない
 export CASE_SENSITIVE="false"
 
-# theme specification
-ZSH_THEME="solarized-powerline"
-
 SH=`basename $SHELL`
-
-# ----------------------------------------
-#  zplug
-# ----------------------------------------
-
-source $HOME/dotfiles/zplug/init.zsh
-
-zplug "b4b4r07/enhancd", use:init.sh
-zplug "glidenote/hub-zsh-completion"
-zplug "modules/prompt", from:prezto
-zplug "modules/utility", from:prezto
-zplug "rupa/z", use:z.sh
-zplug "sorin-ionescu/prezto"
-zplug "zdharma/zsh-diff-so-fancy", as:command, use:bin/git-dsf
-zplug "zplug/zplug", hook-build:'zplug --self-manage'
-zplug 'Valodim/zsh-curl-completion'
-zplug 'b4b4r07/pkill.sh', as:command, use:'pkill.sh', rename-to:'pk'
-
-zplug "zsh-users/zsh-completions", defer:0
-zplug "changyuheng/fz", defer:1
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-
-zplug 'b4b4r07/epoch-cat', \
-      as:command, \
-      hook-build:'go get -d && go build'
-zplug "junegunn/fzf-bin", \
-      as:command, \
-      from:gh-r, \
-      rename-to:"fzf",
-zplug "moncho/dry", \
-      as:command, \
-      from:gh-r, \
-      rename-to:"dry"
-zplug "stedolan/jq", \
-      as:command, \
-      from:gh-r, \
-      rename-to:jq
-zplug "peco/peco", \
-      as:command, \
-      from:gh-r
-zplug "motemen/ghq", \
-      as:command, \
-      from:gh-r, \
-      rename-to:ghq
-zplug "b4b4r07/git-br", \
-      as:command, \
-      use:'git-br'
-zplug "b4b4r07/httpstat", \
-      as:command, \
-      use:'(*).sh', \
-      rename-to:'$1'
-zplug "jhawthorn/fzy", \
-      as:command, \
-      hook-build:"make && sudo make install"
-
 
 # ----------------------------------------
 # path configuration
@@ -88,7 +27,7 @@ for p in $ADDITIONAL_PATH; do
 done
 
 # ----------------------------------------
-# zsh built-in function
+# zsh built-in functjion
 # ----------------------------------------
 
 setopt auto_param_slash      # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
@@ -121,22 +60,7 @@ setopt nonomatch
 unsetopt bg_nice             # バックグラウンドジョブを通常の優先度で実行
 
 autoload -Uz add-zsh-hook
-autoload -Uz is-at-least
 autoload -Uz colors
-
-# ----------------------------------------
-# Less
-# ----------------------------------------
-
-export LESS='-R'
-
-# for unix
-SRC_HIGHLIGHT_PATH="/usr/share/source-highlight/src-hilite-lesspipe.sh"
-[ -x ${SRC_HIGHLIGHT_PATH} ] && export LESSOPEN="| ${SRC_HIGHLIGHT_PATH} %s"
-
-# for macOS w/ homebrew script
-SRC_HIGHLIGHT_PATH_OSX="/usr/local/bin/src-hilite-lesspipe.sh"
-[ -x ${SRC_HIGHLIGHT_PATH_OSX} ] && export LESSOPEN="| ${SRC_HIGHLIGHT_PATH_OSX} %s"
 
 # ----------------------------------------
 # Appearance
@@ -161,52 +85,6 @@ case "${TERM}" in
 	           'di=;34;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
 	    ;;
 esac
-
-# Terminal のタイトルにカレントディレクトリを追加
-case "$TERM" in
-    xterm*|kterm*|rxvt*)
-	    PROMPT=$(print "%B%{\e[34m%}%m:%(5~,%-2~/.../%2~,%~)%{\e[33m%}%# %b")
-	    PROMPT=$(print "%{\e]2;%n@%m: %~\7%}$PROMPT") # title bar
-	    ;;
-    *)
-	    PROMPT='%m:%c%# '
-	    ;;
-esac
-
-# ----------------------------------------
-# Functions
-# ----------------------------------------
-
-# 解凍 http://d.hatena.ne.jp/jeneshicc/20110215/1297778049
-function extract () {
-    if [ -f $1 ] ; then
-	    case $1 in
-            *.tar.bz2)   tar xvjf $1    ;;
-            *.tar.gz)    tar xvzf $1    ;;
-            *.tar.xz)    tar xvJf $1    ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar x $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xvf $1     ;;
-            *.tbz2)      tar xvjf $1    ;;
-            *.tgz)       tar xvzf $1    ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *.lzma)      lzma -dv $1    ;;
-            *.xz)        xz -dv $1      ;;
-            *)           echo "don't know how to extract '$1'..." ;;
-	    esac
-    else
-	    echo "'$1' is not a valid file!"
-    fi
-}
-
-alias -s {gz,tgz,zip,lzh,bz2,tbz,Z,tar,arj,xz,lzma,tbz2,rar}=extract
-
-function precmd () {
-    _z --add "$(pwd -P)"
-}
 
 # ---------------------------------------
 #  anyenv
@@ -283,20 +161,34 @@ source ~/dotfiles/.zsh/.zshrc.alias > /dev/null 2>&1
 source ~/.zshrc.local > /dev/null 2>&1
 
 # ----------------------------------------
-#  zplug
+#  initialize prompt theme
 # ----------------------------------------
 
-if [ ! ~/.zplug/last_zshrc_check_time -nt ~/.zshrc ]; then
-    touch ~/.zplug/last_zshrc_check_time
-    if ! zplug check --verbose; then
-        printf "Install? [y/N]: "
-        if read -q; then
-            echo; zplug install
-        fi
-    fi
-fi
+zstyle ':prezto:load' zfunction 'zargs' 'zmv'
+zstyle ':prezto:module:utility:ls'    color 'yes'
+zstyle ':prezto:module:utility:diff'  color 'yes'
+zstyle ':prezto:module:utility:wdiff' color 'yes'
+zstyle ':prezto:module:utility:make'  color 'yes'
+zstyle ':prezto:load' pmodule \
+  'environment' \
+  'terminal' \
+  'editor' \
+  'history' \
+  'directory' \
+  'spectrum' \
+  'utility' \
+  'completion' \
+  'git' \
+  'syntax-highlighting' \
+  'prompt'
+zstyle ':prezto:module:prompt' theme 'paradox'
 
-zplug load
+prompt paradox
+
+# TAB補完の機能をaliasにも追加
+_Z_CMD=j
+compctl -U -K _z_zsh_tab_completion $_Z_CMD
+
 
 # ----------------------------------------
 # Completion
@@ -309,33 +201,3 @@ zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-
-# ----------------------------------------
-#  initialize prompt theme
-# ----------------------------------------
-
-# vcs_info 設定
-RPROMPT=""
-
-autoload -Uz vcs_info
-
-zstyle ':prezto:load' zfunction 'zargs' 'zmv'
-zstyle ':prezto:module:prompt' theme 'paradox' pwd-length 'short'
-zstyle ':prezto:module:utility:ls'    color 'yes'
-zstyle ':prezto:module:utility:diff'  color 'yes'
-zstyle ':prezto:module:utility:wdiff' color 'yes'
-zstyle ':prezto:module:utility:make'  color 'yes'
-
-prompt paradox
-
-# TAB補完の機能をaliasにも追加
-_Z_CMD=j
-compctl -U -K _z_zsh_tab_completion $_Z_CMD
-
-# ----------------------------------------
-#  zsh precompile
-# ----------------------------------------
-
-if [ ~/.zshrc -nt ~/.zshrc.zwc ]; then
-    zcompile ~/.zshrc
-fi
