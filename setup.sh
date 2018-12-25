@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 DOT_FILES=( .zshrc .gitconfig .gitignore .tmux.conf .zsh .rubocop.yml .minttyrc .emacs.d )
-_
+
 # シンボリックリンクをはる
 echo 'Make symbolic links...'
 
